@@ -575,7 +575,65 @@ describe('Directives', function () {
 
         })
 
-    })
+        it('should pass string values from array iterator', function (done) {
+            var t = new Vue({
+                template:
+                    '<li v-repeat="foo">' +
+                        '<div v-component="foo" v-with="content: $value"></div>' +
+                    '</li>',
+                data: {
+                    foo: [ 'foo', 'bar', 'test' ]
+                },
+                components: {
+                    foo: {
+                        template: '<span class="test">{{ content }}</span>'
+                    }
+                }
+            }),
+            children;
+
+            nextTick(function () {
+                children = t.$el.querySelectorAll('li span.test');
+                assert.strictEqual(children.length, 3);
+
+                assert.strictEqual(children[0].textContent, 'foo');
+                assert.strictEqual(children[1].textContent, 'bar');
+                assert.strictEqual(children[2].textContent, 'test');
+
+                done();
+            });
+        });
+
+        it('should pass object values from array iterator', function (done) {
+            var t = new Vue({
+                template:
+                    '<li v-repeat="foo">' +
+                        '<div v-component="foo" v-with="content: $value"></div>' +
+                    '</li>',
+                data: {
+                    foo: [ { text: 'foo' }, { text: 'bar' }, { text: 'test' } ]
+                },
+                components: {
+                    foo: {
+                        template: '<span class="test">{{ content.text }}</span>'
+                    }
+                }
+            }),
+            children;
+
+            nextTick(function () {
+                children = t.$el.querySelectorAll('li span.test');
+                assert.strictEqual(children.length, 3);
+
+                assert.strictEqual(children[0].textContent, 'foo');
+                assert.strictEqual(children[1].textContent, 'bar');
+                assert.strictEqual(children[2].textContent, 'test');
+
+                done();
+            });
+        });
+
+    });
 
     describe('ref', function () {
 
